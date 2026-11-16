@@ -1,0 +1,28 @@
+min_version: 2
+
+pre-commit:
+  parallel: true
+
+  commands:
+    lint-new:
+      glob: "*.go"
+      run: golangci-lint run --new-from-rev HEAD --timeout 30s
+      skip_empty: true
+
+    format-check:
+      glob: "*.go"
+      run: golangci-lint fmt --diff
+      skip_empty: true
+
+pre-push:
+  parallel: false
+
+  commands:
+    lint-full:
+      run: golangci-lint run --timeout 5m
+
+    format-check-full:
+      run: golangci-lint fmt --diff
+
+    test-race:
+      run: go test -race -count=1 ./...
